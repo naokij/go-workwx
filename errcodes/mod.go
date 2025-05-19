@@ -5,7 +5,7 @@ package errcodes
 // ErrCode 错误码类型
 //
 // 全局错误码文档: https://developer.work.weixin.qq.com/document/path/90313
-// 文档爬取时间: 2024-12-19 15:43:50 +0800
+// 文档爬取时间: 2025-05-16 15:24:56 +0800
 //
 // NOTE: 关于错误码的名字为何如此无聊:
 //
@@ -1133,6 +1133,16 @@ const ErrCode41102 ErrCode = 41102
 // 排查方法: -
 const ErrCode41200 ErrCode = 41200
 
+// ErrCode41201 无效的获客助手会话信息chatkey
+//
+// 排查方法: -
+const ErrCode41201 ErrCode = 41201
+
+// ErrCode41202 商品图册数量超过上限
+//
+// 排查方法: -
+const ErrCode41202 ErrCode = 41202
+
 // ErrCode42001 access_token已过期
 //
 // 排查方法: access_token有时效性，需要重新获取一次
@@ -2145,6 +2155,31 @@ const ErrCode60267 ErrCode = 60267
 //
 // 排查方法: 检查是否使用上次调用本接口时返回的cursor，并且没有改动过滤条件
 const ErrCode60268 ErrCode = 60268
+
+// ErrCode60269 企业邮箱别名非法
+//
+// 排查方法: 检查是否为专属域名的邮箱
+const ErrCode60269 ErrCode = 60269
+
+// ErrCode60270 企业邮箱别名已存在
+//
+// 排查方法: 企业邮箱别名需全局唯一
+const ErrCode60270 ErrCode = 60270
+
+// ErrCode60271 企业邮箱别名非法
+//
+// 排查方法: 检查是否为专属域名的邮箱
+const ErrCode60271 ErrCode = 60271
+
+// ErrCode60272 成员没有专属域名邮箱，不能设置企业邮箱别名
+//
+// 排查方法: 需要先为成员分配专属邮箱域名邮箱
+const ErrCode60272 ErrCode = 60272
+
+// ErrCode60273 别名邮箱超过限制，不能设置企业邮箱
+//
+// 排查方法: 需要删除部分别名邮箱
+const ErrCode60273 ErrCode = 60273
 
 // ErrCode65000 学校已经迁移
 //
@@ -4345,6 +4380,16 @@ const ErrCode93006 ErrCode = 93006
 // 排查方法: -
 const ErrCode93008 ErrCode = 93008
 
+// ErrCode93017 发消息的请求内容不能为空
+//
+// 排查方法: -
+const ErrCode93017 ErrCode = 93017
+
+// ErrCode93018 图片大小超过限制
+//
+// 排查方法: -
+const ErrCode93018 ErrCode = 93018
+
 // ErrCode94000 应用未开启工作台自定义模式
 //
 // 排查方法: 请在管理端后台应用详情里面开启自定义工作台模式
@@ -4414,6 +4459,11 @@ const ErrCode94014 ErrCode = 94014
 //
 // 排查方法: -
 const ErrCode94015 ErrCode = 94015
+
+// ErrCode94016 用户配置的height参数跟应用模板不一致
+//
+// 排查方法: -
+const ErrCode94016 ErrCode = 94016
 
 // ErrCode95000 不合法的open_kfid
 //
@@ -4513,6 +4563,11 @@ const ErrCode95018 ErrCode = 95018
 //
 // [获取接待人员列表]: https://developer.work.weixin.qq.com/document/path/90313#31064
 const ErrCode95019 ErrCode = 95019
+
+// ErrCode95020 接待人员配置超过上限
+//
+// 排查方法: -
+const ErrCode95020 ErrCode = 95020
 
 // ErrCode95022 location_type非法
 //
@@ -5156,6 +5211,21 @@ const ErrCode400302 ErrCode = 400302
 // 排查方法: 可以联系企业管理员在腾讯会议管理端为用户配置创建会议的权限
 const ErrCode400303 ErrCode = 400303
 
+// ErrCode400304 用户没有操作权限
+//
+// 排查方法: 确认用户是否已经激活且使用过日历
+const ErrCode400304 ErrCode = 400304
+
+// ErrCode400307 不允许获取其他企业成员创建的会议详情
+//
+// 排查方法: 检查会议是否为本企业成员创建
+const ErrCode400307 ErrCode = 400307
+
+// ErrCode400308 用户非会议参与人或者创建者，不允许获取会议详情
+//
+// 排查方法: -
+const ErrCode400308 ErrCode = 400308
+
 // ErrCode511020 问题重复
 //
 // 排查方法: -
@@ -5489,7 +5559,7 @@ const ErrCode610016 ErrCode = 610016
 //
 // 小程序和企业主体不一致。确认：
 // 1) 小程序的主体名称，或者小程序绑定的开放平台账号主体名称，与企业的主体名称是否一致。
-// 2) 如果小程序、开放平台账号、企业三者的主体一致，那需要调用接口传入的openid与unionid是否该小程序获取。
+// 2) 如果小程序、开放平台账号、企业三者的主体一致，那需要确认调用接口传入的openid与unionid是否该小程序获取。
 //
 // [查看帮助]: https://developer.work.weixin.qq.com/document/path/90313#%E9%94%99%E8%AF%AF%E7%A0%81%EF%BC%9A610017
 const ErrCode610017 ErrCode = 610017
@@ -6368,6 +6438,26 @@ const ErrCode680045 ErrCode = 680045
 //
 // 排查方法: 检查企业中已启用的邮箱数量
 const ErrCode680046 ErrCode = 680046
+
+// ErrCode680047 别名邮箱格式不合法
+//
+// 排查方法: -
+const ErrCode680047 ErrCode = 680047
+
+// ErrCode680048 别名邮箱账号已存在
+//
+// 排查方法: -
+const ErrCode680048 ErrCode = 680048
+
+// ErrCode680049 传入的别名邮箱超出5个数量上限
+//
+// 排查方法: -
+const ErrCode680049 ErrCode = 680049
+
+// ErrCode680050 企业没有专属域名，不允许添加别名
+//
+// 排查方法: -
+const ErrCode680050 ErrCode = 680050
 
 // ErrCode680106 当前企业会议应用已关闭，音视频会议不可用，请联系管理员
 //
@@ -7313,6 +7403,11 @@ const ErrCode710658 ErrCode = 710658
 // 排查方法: -
 const ErrCode710659 ErrCode = 710659
 
+// ErrCode710660 数据专区示例镜像内部错误
+//
+// 排查方法: 根据errmsg以及专区日志进一步排查
+const ErrCode710660 ErrCode = 710660
+
 // ErrCode710671 调试凭证已过期
 //
 // 排查方法: -
@@ -7352,6 +7447,11 @@ const ErrCode710677 ErrCode = 710677
 //
 // 排查方法: -
 const ErrCode710678 ErrCode = 710678
+
+// ErrCode710682 大模型服务繁忙，请重试
+//
+// 排查方法: -
+const ErrCode710682 ErrCode = 710682
 
 // ErrCode730000 非法的tmp_openid
 //
@@ -7905,3 +8005,8 @@ const ErrCode2400007 ErrCode = 2400007
 //
 // 排查方法: -
 const ErrCode2400008 ErrCode = 2400008
+
+// ErrCode2543337 数据加载中，请稍后重试
+//
+// 排查方法: -
+const ErrCode2543337 ErrCode = 2543337

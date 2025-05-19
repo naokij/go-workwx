@@ -9,3 +9,4 @@ package workwx
 //go:generate go run --tags sdkcodegen ./internal/sdkcodegen ./docs/oa.md ./oa.md.go
 //go:generate go run --tags sdkcodegen ./internal/sdkcodegen ./docs/rx_msg.md ./rx_msg.md.go
 //go:generate go run --tags sdkcodegen ./internal/errcodegen ./errcodes/mod.go
+//go:generate go run --tags sdkcodegen ./internal/sdkcodegen ./docs/wedoc.md ./wedoc.md.go

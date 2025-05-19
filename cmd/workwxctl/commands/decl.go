@@ -153,11 +153,11 @@ func InitApp() *cli.App {
 					},
 					&cli.StringFlag{
 						Name:  flagButtonText,
-						Usage: "按钮文字。 默认为“详情”， 不超过4个文字，超过自动截断。",
+						Usage: "按钮文字。 默认为\"详情\"， 不超过4个文字，超过自动截断。",
 					},
 					&cli.StringFlag{
 						Name:  flagSourceContentURL,
-						Usage: "图文消息点击“阅读原文”之后的页面链接",
+						Usage: "图文消息点击\"阅读原文\"之后的页面链接",
 					},
 					&cli.StringFlag{
 						Name:  flagDigest,
@@ -194,6 +194,142 @@ func InitApp() *cli.App {
 						Name:    flagMentionMobile,
 						Aliases: []string{flagMentionMobileShort},
 						Usage:   "需要被提醒的用户手机号 (可指定多次), 特殊值 '" + workwx.MentionAll + "' 表示提醒所有人",
+					},
+				},
+			},
+			// 企业微信文档管理命令
+			{
+				Name:   "wedoc-create",
+				Usage:  "创建企业微信文档",
+				Action: cmdWedocCreate,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  flagSpaceID,
+						Usage: "空间spaceid，若指定spaceid，则father-id也要同时指定",
+					},
+					&cli.StringFlag{
+						Name:  flagFatherID,
+						Usage: "父目录fileid, 在根目录时为空间spaceid",
+					},
+					&cli.StringFlag{
+						Name:  flagDocType,
+						Usage: "文档类型: doc(文档), sheet(表格), smartsheet(智能表格)",
+					},
+					&cli.StringFlag{
+						Name:  flagDocName,
+						Usage: "文档名字（注意：文件名最多填255个字符, 超过255个字符会被截断）",
+					},
+					&cli.StringSliceFlag{
+						Name:  flagAdminUsers,
+						Usage: "文档管理员userid列表，可重复指定",
+					},
+				},
+			},
+			{
+				Name:   "wedoc-rename",
+				Usage:  "重命名企业微信文档",
+				Action: cmdWedocRename,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  flagDocID,
+						Usage: "文档docid，仅可修改应用自己创建的文档，doc-id和form-id只能填其中一个",
+					},
+					&cli.StringFlag{
+						Name:  flagFormID,
+						Usage: "收集表id，仅可修改应用自己创建的收集表，doc-id和form-id只能填其中一个",
+					},
+					&cli.StringFlag{
+						Name:  flagNewName,
+						Usage: "重命名后的文档名（注意：文档名最多填255个字符，英文算1个，汉字算2个，超过255个字符会被截断）",
+					},
+				},
+			},
+			{
+				Name:   "wedoc-delete",
+				Usage:  "删除企业微信文档",
+				Action: cmdWedocDelete,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  flagDocID,
+						Usage: "文档docid，仅可删除应用自己创建的文档，doc-id和form-id只能填其中一个",
+					},
+					&cli.StringFlag{
+						Name:  flagFormID,
+						Usage: "收集表id，仅可删除应用自己创建的收集表，doc-id和form-id只能填其中一个",
+					},
+				},
+			},
+			{
+				Name:   "wedoc-get-info",
+				Usage:  "获取企业微信文档基础信息",
+				Action: cmdWedocGetInfo,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  flagDocID,
+						Usage: "文档docid",
+					},
+				},
+			},
+			{
+				Name:   "wedoc-share",
+				Usage:  "分享企业微信文档",
+				Action: cmdWedocShare,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  flagDocID,
+						Usage: "文档id，doc-id和form-id只能填其中一个",
+					},
+					&cli.StringFlag{
+						Name:  flagFormID,
+						Usage: "收集表id，doc-id和form-id只能填其中一个",
+					},
+				},
+			},
+			{
+				Name:   "smartsheet-list-sheets",
+				Usage:  "获取文档中的子表列表",
+				Action: cmdSmartsheetListSheets,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  flagDocID,
+						Usage: "文档的docid",
+					},
+					&cli.StringFlag{
+						Name:  flagSheetID,
+						Usage: "指定子表ID查询（可选）",
+					},
+					&cli.BoolFlag{
+						Name:  "need-all-type-sheet",
+						Usage: "是否获取所有类型子表",
+					},
+				},
+			},
+			{
+				Name:   "smartsheet-list-views",
+				Usage:  "获取智能表格视图列表",
+				Action: cmdSmartsheetListViews,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  flagDocID,
+						Usage: "文档的docid",
+					},
+					&cli.StringFlag{
+						Name:  flagSheetID,
+						Usage: "Smartsheet子表ID",
+					},
+					&cli.StringSliceFlag{
+						Name:  flagViewIDs,
+						Usage: "需要查询的视图ID数组（可选）",
+					},
+					&cli.UintFlag{
+						Name:  flagOffset,
+						Usage: "偏移量，初始值为0",
+						Value: 0,
+					},
+					&cli.UintFlag{
+						Name:  flagLimit,
+						Usage: "分页大小，不填或0时，如果总数大于1000，一次性返回1000个视图，否则返回全部视图；最大值为1000",
+						Value: 0,
 					},
 				},
 			},

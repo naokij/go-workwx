@@ -50,6 +50,20 @@ const (
 	flagMentionUser        = "mention-user"
 	flagMentionMobile      = "mention-mobile"
 	flagMentionMobileShort = "m"
+
+	// 企业微信文档相关标志
+	flagSpaceID    = "space-id"
+	flagFatherID   = "father-id"
+	flagDocID      = "doc-id"
+	flagFormID     = "form-id"
+	flagDocType    = "doc-type"
+	flagDocName    = "doc-name"
+	flagAdminUsers = "admin-users"
+	flagNewName    = "new-name"
+	flagSheetID    = "sheet-id"
+	flagViewIDs    = "view-ids"
+	flagOffset     = "offset"
+	flagLimit      = "limit"
 )
 
 type cliOptions struct {

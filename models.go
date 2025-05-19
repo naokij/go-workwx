@@ -1973,3 +1973,45 @@ func (x reqOASetOneUserVacationQuota) intoBody() ([]byte, error) {
 type respOASetOneUserVacationQuota struct {
 	respCommon
 }
+
+var _ bodyer = reqListSmartsheetViews{}
+
+func (x reqListSmartsheetViews) intoBody() ([]byte, error) {
+	return marshalIntoJSONBody(x)
+}
+
+var _ bodyer = reqCreateDoc{}
+
+func (x reqCreateDoc) intoBody() ([]byte, error) {
+	return marshalIntoJSONBody(x)
+}
+
+var _ bodyer = reqRenameDoc{}
+
+func (x reqRenameDoc) intoBody() ([]byte, error) {
+	return marshalIntoJSONBody(x)
+}
+
+var _ bodyer = reqDelDoc{}
+
+func (x reqDelDoc) intoBody() ([]byte, error) {
+	return marshalIntoJSONBody(x)
+}
+
+var _ bodyer = reqGetDocBaseInfo{}
+
+func (x reqGetDocBaseInfo) intoBody() ([]byte, error) {
+	return marshalIntoJSONBody(x)
+}
+
+var _ bodyer = reqDocShare{}
+
+func (x reqDocShare) intoBody() ([]byte, error) {
+	return marshalIntoJSONBody(x)
+}
+
+var _ bodyer = reqGetSmartsheet{}
+
+func (x reqGetSmartsheet) intoBody() ([]byte, error) {
+	return marshalIntoJSONBody(x)
+}
