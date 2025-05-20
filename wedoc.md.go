@@ -532,6 +532,76 @@ type NumberRule struct {
 	Value string `json:"value"`
 }
 
+// reqSmartsheetGetRecords 查询记录请求
+type reqSmartsheetGetRecords struct {
+	// DocID 文档的docid
+	DocID string `json:"docid"`
+	// SheetID Smartsheet 子表ID
+	SheetID string `json:"sheet_id"`
+	// ViewID 视图 ID
+	ViewID string `json:"view_id,omitempty"`
+	// RecordIDs 由记录 ID 组成的 JSON 数组
+	RecordIDs []string `json:"record_ids,omitempty"`
+	// KeyType 返回记录中单元格的key类型
+	KeyType CellValueKeyType `json:"key_type,omitempty"`
+	// FieldTitles 返回指定列，由字段标题组成的 JSON 数组 ，key_type 为 CELL_VALUE_KEY_TYPE_FIELD_TITLE 时有效
+	FieldTitles []string `json:"field_titles,omitempty"`
+	// FieldIDs 返回指定列，由字段 ID 组成的 JSON 数组 ，key_type 为 CELL_VALUE_KEY_TYPE_FIELD_ID 时有效
+	FieldIDs []string `json:"field_ids,omitempty"`
+	// Sort 对返回记录进行排序
+	Sort []Sort `json:"sort,omitempty"`
+	// Offset 偏移量，初始值为 0
+	Offset uint32 `json:"offset,omitempty"`
+	// Limit 分页大小，当不填写该参数或将该参数设置为 0 时，如果总数大于 1000，一次性返回 1000 行记录，当总数小于 1000 时，返回全部记录；limit 最大值为 1000
+	Limit uint32 `json:"limit,omitempty"`
+}
+
+// CellValueKeyType 记录中key的类型
+type CellValueKeyType string
+
+const (
+	CellValueKeyTypeFieldTitle CellValueKeyType = "CELL_VALUE_KEY_TYPE_FIELD_TITLE" // key用字段标题表示
+	CellValueKeyTypeFieldID    CellValueKeyType = "CELL_VALUE_KEY_TYPE_FIELD_ID"    // key用字段 ID 表示
+)
+
+// Sort 排序参数
+type Sort struct {
+	// FieldTitle 需要排序的字段标题
+	FieldTitle string `json:"field_title"`
+	// Desc 是否进行降序排序，默认值为 false
+	Desc bool `json:"desc,omitempty"`
+}
+
+// respSmartsheetGetRecords 查询记录响应
+type respSmartsheetGetRecords struct {
+	// respCommon 通用响应
+	respCommon
+	// Total 符合筛选条件的视图总数
+	Total uint32 `json:"total"`
+	// HasMore 是否还有更多项
+	HasMore bool `json:"has_more"`
+	// Next 下次下一个搜索结果的偏移量
+	Next uint32 `json:"next"`
+	// Records 由查询记录的具体内容组成的 JSON 数组
+	Records []Record `json:"records"`
+}
+
+// Record 记录信息
+type Record struct {
+	// RecordID 记录 ID
+	RecordID string `json:"record_id"`
+	// CreateTime 记录的创建时间
+	CreateTime string `json:"create_time"`
+	// UpdateTime 记录的更新时间
+	UpdateTime string `json:"update_time"`
+	// Values 记录的具体内容，key为字段标题或字段ID，value类型根据字段类型不同而异
+	Values map[string]interface{} `json:"values"`
+	// CreatorName 创建者名字
+	CreatorName string `json:"creator_name"`
+	// UpdaterName 最后编辑者名字
+	UpdaterName string `json:"updater_name"`
+}
+
 // execWedocCreatDoc 新建文档
 func (c *WorkwxApp) execWedocCreatDoc(req reqCreateDoc) (respCreateDoc, error) {
 	var resp respCreateDoc
@@ -615,6 +685,17 @@ func (c *WorkwxApp) execWedocSmartsheetGetFields(req reqListSmartsheetFields) (r
 	err := executeQyapiJSONPost(c, "/cgi-bin/wedoc/smartsheet/get_fields", req, &resp, true)
 	if err != nil {
 		return respListSmartsheetFields{}, err
+	}
+
+	return resp, nil
+}
+
+// execWedocSmartsheetGetRecords 查询记录
+func (c *WorkwxApp) execWedocSmartsheetGetRecords(req reqSmartsheetGetRecords) (respSmartsheetGetRecords, error) {
+	var resp respSmartsheetGetRecords
+	err := executeQyapiJSONPost(c, "/cgi-bin/wedoc/smartsheet/get_records", req, &resp, true)
+	if err != nil {
+		return respSmartsheetGetRecords{}, err
 	}
 
 	return resp, nil

@@ -448,6 +448,59 @@ Name|JSON|Type|Doc
 `Type`|`type`|`string`|规则类型
 `Value`|`value`|`string`|存放创建时间格式或固定字符，自增数字位数
 
+### `reqSmartsheetGetRecords` 查询记录请求
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`DocID`|`docid`|`string`|文档的docid
+`SheetID`|`sheet_id`|`string`|Smartsheet 子表ID
+`ViewID`|`view_id,omitempty`|`string`|视图 ID
+`RecordIDs`|`record_ids,omitempty`|`[]string`|由记录 ID 组成的 JSON 数组
+`KeyType`|`key_type,omitempty`|`CellValueKeyType`|返回记录中单元格的key类型
+`FieldTitles`|`field_titles,omitempty`|`[]string`|返回指定列，由字段标题组成的 JSON 数组 ，key_type 为 CELL_VALUE_KEY_TYPE_FIELD_TITLE 时有效
+`FieldIDs`|`field_ids,omitempty`|`[]string`|返回指定列，由字段 ID 组成的 JSON 数组 ，key_type 为 CELL_VALUE_KEY_TYPE_FIELD_ID 时有效
+`Sort`|`sort,omitempty`|`[]Sort`|对返回记录进行排序
+`Offset`|`offset,omitempty`|`uint32`|偏移量，初始值为 0
+`Limit`|`limit,omitempty`|`uint32`|分页大小，当不填写该参数或将该参数设置为 0 时，如果总数大于 1000，一次性返回 1000 行记录，当总数小于 1000 时，返回全部记录；limit 最大值为 1000
+
+```go
+// CellValueKeyType 记录中key的类型
+type CellValueKeyType string
+
+const (
+	CellValueKeyTypeFieldTitle CellValueKeyType = "CELL_VALUE_KEY_TYPE_FIELD_TITLE" // key用字段标题表示
+	CellValueKeyTypeFieldID    CellValueKeyType = "CELL_VALUE_KEY_TYPE_FIELD_ID"    // key用字段 ID 表示
+)
+```
+
+### `Sort` 排序参数
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`FieldTitle`|`field_title`|`string`|需要排序的字段标题
+`Desc`|`desc,omitempty`|`bool`|是否进行降序排序，默认值为 false
+
+### `respSmartsheetGetRecords` 查询记录响应
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`respCommon`||-|通用响应
+`Total`|`total`|`uint32`|符合筛选条件的视图总数
+`HasMore`|`has_more`|`bool`|是否还有更多项
+`Next`|`next`|`uint32`|下次下一个搜索结果的偏移量
+`Records`|`records`|`[]Record`|由查询记录的具体内容组成的 JSON 数组
+
+### `Record` 记录信息
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`RecordID`|`record_id`|`string`|记录 ID
+`CreateTime`|`create_time`|`string`|记录的创建时间
+`UpdateTime`|`update_time`|`string`|记录的更新时间
+`Values`|`values`|`map[string]interface{}`|记录的具体内容，key为字段标题或字段ID，value类型根据字段类型不同而异
+`CreatorName`|`creator_name`|`string`|创建者名字
+`UpdaterName`|`updater_name`|`string`|最后编辑者名字
+
 
 ## API calls
 
@@ -461,5 +514,6 @@ Name|Request Type|Response Type|Access Token|URL|Doc
 `execWedocSmartsheetGetSheet`|`reqGetSmartsheet`|`respGetSmartsheet`|Y|`POST /cgi-bin/wedoc/smartsheet/get_sheet`|[查询子表](https://developer.work.weixin.qq.com/document/path/99911)
 `execWedocSmartsheetGetViews`|`reqListSmartsheetViews`|`respListSmartsheetViews`|Y|`POST /cgi-bin/wedoc/smartsheet/get_views`|[查询视图](https://developer.work.weixin.qq.com/document/path/99913)
 `execWedocSmartsheetGetFields`|`reqListSmartsheetFields`|`respListSmartsheetFields`|Y|`POST /cgi-bin/wedoc/smartsheet/get_fields`|[查询字段](https://developer.work.weixin.qq.com/document/path/100229)
+`execWedocSmartsheetGetRecords`|`reqSmartsheetGetRecords`|`respSmartsheetGetRecords`|Y|`POST /cgi-bin/wedoc/smartsheet/get_records`|[查询记录](https://developer.work.weixin.qq.com/document/path/100230)
 
 

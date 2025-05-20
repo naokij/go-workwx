@@ -2028,3 +2028,9 @@ var _ bodyer = reqListSmartsheetFields{}
 func (x reqListSmartsheetFields) intoBody() ([]byte, error) {
 	return marshalIntoJSONBody(x)
 }
+
+var _ bodyer = reqSmartsheetGetRecords{}
+
+func (x reqSmartsheetGetRecords) intoBody() ([]byte, error) {
+	return marshalIntoJSONBody(x)
+}

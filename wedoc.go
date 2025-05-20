@@ -151,3 +151,36 @@ func (c *WorkwxApp) ListSmartsheetFields(docID, sheetID string, viewID string, f
 
 	return resp.Total, resp.Fields, nil
 }
+
+// ListSmartsheetRecords 获取智能表格记录列表
+// docID: 文档的docid
+// sheetID: Smartsheet子表ID
+// viewID: 可选，视图ID
+// recordIDs: 可选，由记录ID组成的数组
+// keyType: 可选，返回记录中单元格的key类型，默认为CellValueKeyTypeFieldTitle
+// fieldTitles: 可选，返回指定列，由字段标题组成的数组，keyType为CellValueKeyTypeFieldTitle时有效
+// fieldIDs: 可选，返回指定列，由字段ID组成的数组，keyType为CellValueKeyTypeFieldID时有效
+// sort: 可选，对返回记录进行排序
+// offset: 可选，偏移量，初始值为0
+// limit: 可选，分页大小，不填或0时，如果总数大于1000，一次性返回1000行记录，当总数小于1000时，返回全部记录；最大值为1000
+func (c *WorkwxApp) ListSmartsheetRecords(docID, sheetID string, viewID string, recordIDs []string, keyType CellValueKeyType, fieldTitles, fieldIDs []string, sort []Sort, offset, limit uint32) (total uint32, hasMore bool, next uint32, records []Record, err error) {
+	req := reqSmartsheetGetRecords{
+		DocID:       docID,
+		SheetID:     sheetID,
+		ViewID:      viewID,
+		RecordIDs:   recordIDs,
+		KeyType:     keyType,
+		FieldTitles: fieldTitles,
+		FieldIDs:    fieldIDs,
+		Sort:        sort,
+		Offset:      offset,
+		Limit:       limit,
+	}
+
+	resp, err := c.execWedocSmartsheetGetRecords(req)
+	if err != nil {
+		return 0, false, 0, nil, err
+	}
+
+	return resp.Total, resp.HasMore, resp.Next, resp.Records, nil
+}

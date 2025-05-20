@@ -73,6 +73,12 @@ const (
 	flagAuthUserids = "auth-userids"
 	flagAuthDeptids = "auth-deptids"
 	flagAuthType    = "auth-type"
+
+	// 智能表格记录相关标志
+	flagRecordIDs  = "record-ids"
+	flagKeyType    = "key-type"
+	flagSortFields = "sort-fields"
+	flagSortDesc   = "sort-desc"
 )
 
 type cliOptions struct {

@@ -370,6 +370,60 @@ func InitApp() *cli.App {
 					},
 				},
 			},
+			{
+				Name:   "smartsheet-list-records",
+				Usage:  "获取智能表格记录列表",
+				Action: cmdSmartsheetListRecords,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  flagDocID,
+						Usage: "文档的docid",
+					},
+					&cli.StringFlag{
+						Name:  flagSheetID,
+						Usage: "Smartsheet子表ID",
+					},
+					&cli.StringFlag{
+						Name:  flagViewID,
+						Usage: "视图ID（可选）",
+					},
+					&cli.StringSliceFlag{
+						Name:  flagRecordIDs,
+						Usage: "由记录ID组成的数组（可选）",
+					},
+					&cli.StringFlag{
+						Name:  flagKeyType,
+						Usage: "返回记录中单元格的key类型: CELL_VALUE_KEY_TYPE_FIELD_TITLE(字段标题), CELL_VALUE_KEY_TYPE_FIELD_ID(字段ID)，默认使用字段标题",
+						Value: string(workwx.CellValueKeyTypeFieldTitle),
+					},
+					&cli.StringSliceFlag{
+						Name:  flagFieldTitles,
+						Usage: "返回指定列，由字段标题组成的数组（可选），key_type为CELL_VALUE_KEY_TYPE_FIELD_TITLE时有效",
+					},
+					&cli.StringSliceFlag{
+						Name:  flagFieldIDs,
+						Usage: "返回指定列，由字段ID组成的数组（可选），key_type为CELL_VALUE_KEY_TYPE_FIELD_ID时有效",
+					},
+					&cli.StringSliceFlag{
+						Name:  flagSortFields,
+						Usage: "排序字段标题列表（可选），可指定多个字段进行排序",
+					},
+					&cli.StringSliceFlag{
+						Name:  flagSortDesc,
+						Usage: "排序方式列表（可选），与sort-fields一一对应，true表示降序，false表示升序，默认为false",
+					},
+					&cli.UintFlag{
+						Name:  flagOffset,
+						Usage: "偏移量，初始值为0",
+						Value: 0,
+					},
+					&cli.UintFlag{
+						Name:  flagLimit,
+						Usage: "分页大小，不填或0时，如果总数大于1000，一次性返回1000行记录，当总数小于1000时，返回全部记录；最大值为1000",
+						Value: 0,
+					},
+				},
+			},
 			// 企业微信微盘管理命令
 			{
 				Name:   "wedrive-create-space",
