@@ -238,7 +238,216 @@ Name|JSON|Type|Doc
 :---|:---|:---|:--
 `Type`|`type`|`string`|日期类型
 `Value`|`value`|`[]string`|具体日期值，type为具体日期或具体日期范围时必填
+
+
+### `reqListSmartsheetFields` 获取智能表格字段请求
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`DocID`|`docid`|`string`|文档的docid
+`SheetID`|`sheet_id`|`string`|表格ID
+`ViewID`|`view_id,omitempty`|`string`|视图ID
+`FieldIDs`|`field_ids,omitempty`|`[]string`|由字段ID组成的数组
+`FieldTitles`|`field_titles,omitempty`|`[]string`|由字段标题组成的数组
+`Offset`|`offset,omitempty`|`int`|偏移量，初始值为0
+`Limit`|`limit,omitempty`|`int`|分页大小，不填或0时，如果总数大于1000，一次性返回1000个字段，当总数小于1000时，返回全部字段；最大值为1000
+
+### `respListSmartsheetFields` 获取智能表格字段响应
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`respCommon`||-|通用响应
+`Total`|`total`|`int`|字段总数
+`Fields`|`fields`|`[]Field`|字段详情
+
+### `Field` 字段信息
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`FieldID`|`field_id`|`string`|字段ID
+`FieldTitle`|`field_title`|`string`|字段标题
+`FieldType`|`field_type`|`FieldType`|字段类型
+`PropertyNumber`|`property_number,omitempty`|`*NumberFieldProperty`|数字类型的字段属性
+`PropertyCheckbox`|`property_checkbox,omitempty`|`*CheckboxFieldProperty`|复选框类型的字段属性
+`PropertyDateTime`|`property_date_time,omitempty`|`*DateTimeFieldProperty`|日期类型的字段属性
+`PropertyAttachment`|`property_attachment,omitempty`|`*AttachmentFieldProperty`|文件类型的字段属性
+`PropertyUser`|`property_user,omitempty`|`*UserFieldProperty`|人员类型的字段属性
+`PropertyURL`|`property_url,omitempty`|`*UrlFieldProperty`|超链接类型的字段属性
+`PropertySelect`|`property_select,omitempty`|`*SelectFieldProperty`|多选类型的字段属性
+`PropertyCreatedTime`|`property_created_time,omitempty`|`*CreatedTimeFieldProperty`|创建时间类型的字段属性
+`PropertyModifiedTime`|`property_modified_time,omitempty`|`*ModifiedTimeFieldProperty`|最后编辑时间类型的字段属性
+`PropertyProgress`|`property_progress,omitempty`|`*ProgressFieldProperty`|进度类型的字段属性
+`PropertySingleSelect`|`property_single_select,omitempty`|`*SingleSelectFieldProperty`|单选类型的字段属性
+`PropertyReference`|`property_reference,omitempty`|`*ReferenceFieldProperty`|引用类型的字段属性
+`PropertyLocation`|`property_location,omitempty`|`*LocationFieldProperty`|地理位置类型的字段属性
+`PropertyAutoNumber`|`property_auto_number,omitempty`|`*AutoNumberFieldProperty`|自动编号类型的字段属性
+`PropertyCurrency`|`property_currency,omitempty`|`*CurrencyFieldProperty`|货币类型的字段属性
+`PropertyWwGroup`|`property_ww_group,omitempty`|`*WwGroupFieldProperty`|群类型的字段属性
+`PropertyPercentage`|`property_percentage,omitempty`|`*PercentageFieldProperty`|百分数类型的字段属性
+
+
+```go
+// FieldType 字段类型
+type FieldType string
+
+const (
+	FieldTypeText         FieldType = "FIELD_TYPE_TEXT"         // 文本
+	FieldTypeNumber       FieldType = "FIELD_TYPE_NUMBER"       // 数字
+	FieldTypeCheckbox     FieldType = "FIELD_TYPE_CHECKBOX"     // 复选框
+	FieldTypeDateTime     FieldType = "FIELD_TYPE_DATE_TIME"    // 日期
+	FieldTypeImage        FieldType = "FIELD_TYPE_IMAGE"        // 图片
+	FieldTypeAttachment   FieldType = "FIELD_TYPE_ATTACHMENT"   // 文件
+	FieldTypeUser         FieldType = "FIELD_TYPE_USER"         // 成员
+	FieldTypeURL          FieldType = "FIELD_TYPE_URL"          // 超链接
+	FieldTypeSelect       FieldType = "FIELD_TYPE_SELECT"       // 多选
+	FieldTypeCreatedUser  FieldType = "FIELD_TYPE_CREATED_USER" // 创建人
+	FieldTypeModifiedUser FieldType = "FIELD_TYPE_MODIFIED_USER" // 最后编辑人
+	FieldTypeCreatedTime  FieldType = "FIELD_TYPE_CREATED_TIME" // 创建时间
+	FieldTypeModifiedTime FieldType = "FIELD_TYPE_MODIFIED_TIME" // 最后编辑时间
+	FieldTypeProgress     FieldType = "FIELD_TYPE_PROGRESS"     // 进度
+	FieldTypePhoneNumber  FieldType = "FIELD_TYPE_PHONE_NUMBER" // 电话
+	FieldTypeEmail        FieldType = "FIELD_TYPE_EMAIL"        // 邮件
+	FieldTypeSingleSelect FieldType = "FIELD_TYPE_SINGLE_SELECT" // 单选
+	FieldTypeReference    FieldType = "FIELD_TYPE_REFERENCE"    // 关联
+	FieldTypeLocation     FieldType = "FIELD_TYPE_LOCATION"     // 地理位置
+	FieldTypeFormula      FieldType = "FIELD_TYPE_FORMULA"      // 公式
+	FieldTypeCurrency     FieldType = "FIELD_TYPE_CURRENCY"     // 货币
+	FieldTypeWwGroup      FieldType = "FIELD_TYPE_WWGROUP"      // 群
+	FieldTypeAutoNumber   FieldType = "FIELD_TYPE_AUTONUMBER"   // 自动编号
+	FieldTypePercentage   FieldType = "FIELD_TYPE_PERCENTAGE"   // 百分数
+)
 ```
+
+### `NumberFieldProperty` 数字类型字段属性
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`DecimalPlaces`|`decimal_places`|`int`|表示小数点的位数，即数字精度
+`UseSeparate`|`use_separate`|`bool`|是否使用千位符，设置此属性后数字字段将以英文逗号分隔千分位，如1,000
+
+### `CheckboxFieldProperty` 复选框类型字段属性
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Checked`|`checked`|`bool`|新增时是否默认勾选
+
+### `DateTimeFieldProperty` 日期类型字段属性
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Format`|`format`|`string`|设置日期格式
+`AutoFill`|`auto_fill`|`bool`|新建记录时，是否自动填充时间
+
+### `AttachmentFieldProperty` 文件类型字段属性
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`DisplayMode`|`display_mode`|`string`|展示样式
+
+### `UserFieldProperty` 成员类型字段属性
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`IsMultiple`|`is_multiple`|`bool`|允许添加多个人员
+`IsNotified`|`is_notified`|`bool`|添加人员时通知用户，关闭后不通知
+
+### `UrlFieldProperty` 超链接类型字段属性
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Type`|`type`|`string`|超链接展示样式
+
+### `SelectFieldProperty` 多选类型字段属性
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`IsQuickAdd`|`is_quick_add`|`bool`|是否允许填写时新增选项
+`Options`|`options`|`[]Option`|多选选项的格式设置
+
+### `CreatedTimeFieldProperty` 创建时间类型字段属性
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Format`|`format`|`string`|设置日期格式
+
+### `ModifiedTimeFieldProperty` 最后编辑时间类型字段属性
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Format`|`format`|`string`|设置日期格式
+
+### `ProgressFieldProperty` 进度类型字段属性
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`DecimalPlaces`|`decimal_places`|`int`|小数位数
+
+### `SingleSelectFieldProperty` 单选类型字段属性
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`IsQuickAdd`|`is_quick_add`|`bool`|是否允许填写时新增选项
+`Options`|`options`|`[]Option`|单选选项的格式设置
+
+### `ReferenceFieldProperty` 关联字段属性
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`SubID`|`sub_id`|`string`|关联的子表id，为空时，表示关联本子表
+`FiledID`|`filed_id`|`string`|关联的字段id
+`IsMultiple`|`is_multiple`|`bool`|是否允许多选
+`ViewID`|`view_id`|`string`|视图id
+
+### `LocationFieldProperty` 地理位置字段属性
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`InputType`|`input_type`|`string`|输入类型
+
+### `AutoNumberFieldProperty` 自动编号字段属性
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Type`|`type`|`string`|输入类型
+`Rules`|`rules`|`[]NumberRule`|自定义规则
+`ReformatExistingRecord`|`reformat_existing_record`|`bool`|是否应用于已有编号
+
+### `CurrencyFieldProperty` 货币类型字段属性
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`CurrencyType`|`currency_type`|`string`|输入类型
+`DecimalPlaces`|`decimal_places`|`int`|表示小数点的位数，即数字精度
+`UseSeparate`|`use_separate`|`bool`|是否使用千位符
+
+### `WwGroupFieldProperty` 群类型的字段属性
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`AllowMultiple`|`allow_multiple`|`bool`|是否允许多个群聊
+
+### `PercentageFieldProperty` 百分数类型的字段属性
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`DecimalPlaces`|`decimal_places`|`int`|表示小数点的位数，即数字精度
+`UseSeparate`|`use_separate`|`bool`|是否使用千位符
+
+### `Option` 选项参数
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`ID`|`id`|`string`|选项ID
+`Text`|`text`|`string`|要填写的选项内容
+`Style`|`style`|`int`|选项颜色
+
+### `NumberRule` 自动编号规则
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Type`|`type`|`string`|规则类型
+`Value`|`value`|`string`|存放创建时间格式或固定字符，自增数字位数
+
 
 ## API calls
 
@@ -251,3 +460,6 @@ Name|Request Type|Response Type|Access Token|URL|Doc
 `execWedocDocShare`|`reqDocShare`|`respDocShare`|Y|`POST /cgi-bin/wedoc/doc_share`|[分享文档](https://developer.work.weixin.qq.com/document/path/97733)
 `execWedocSmartsheetGetSheet`|`reqGetSmartsheet`|`respGetSmartsheet`|Y|`POST /cgi-bin/wedoc/smartsheet/get_sheet`|[查询子表](https://developer.work.weixin.qq.com/document/path/99911)
 `execWedocSmartsheetGetViews`|`reqListSmartsheetViews`|`respListSmartsheetViews`|Y|`POST /cgi-bin/wedoc/smartsheet/get_views`|[查询视图](https://developer.work.weixin.qq.com/document/path/99913)
+`execWedocSmartsheetGetFields`|`reqListSmartsheetFields`|`respListSmartsheetFields`|Y|`POST /cgi-bin/wedoc/smartsheet/get_fields`|[查询字段](https://developer.work.weixin.qq.com/document/path/100229)
+
+

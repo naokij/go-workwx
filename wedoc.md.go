@@ -284,6 +284,254 @@ type FilterDataTimeValue struct {
 	Value []string `json:"value"`
 }
 
+// reqListSmartsheetFields 获取智能表格字段请求
+type reqListSmartsheetFields struct {
+	// DocID 文档的docid
+	DocID string `json:"docid"`
+	// SheetID 表格ID
+	SheetID string `json:"sheet_id"`
+	// ViewID 视图ID
+	ViewID string `json:"view_id,omitempty"`
+	// FieldIDs 由字段ID组成的数组
+	FieldIDs []string `json:"field_ids,omitempty"`
+	// FieldTitles 由字段标题组成的数组
+	FieldTitles []string `json:"field_titles,omitempty"`
+	// Offset 偏移量，初始值为0
+	Offset int `json:"offset,omitempty"`
+	// Limit 分页大小，不填或0时，如果总数大于1000，一次性返回1000个字段，当总数小于1000时，返回全部字段；最大值为1000
+	Limit int `json:"limit,omitempty"`
+}
+
+// respListSmartsheetFields 获取智能表格字段响应
+type respListSmartsheetFields struct {
+	// respCommon 通用响应
+	respCommon
+	// Total 字段总数
+	Total int `json:"total"`
+	// Fields 字段详情
+	Fields []Field `json:"fields"`
+}
+
+// Field 字段信息
+type Field struct {
+	// FieldID 字段ID
+	FieldID string `json:"field_id"`
+	// FieldTitle 字段标题
+	FieldTitle string `json:"field_title"`
+	// FieldType 字段类型
+	FieldType FieldType `json:"field_type"`
+	// PropertyNumber 数字类型的字段属性
+	PropertyNumber *NumberFieldProperty `json:"property_number,omitempty"`
+	// PropertyCheckbox 复选框类型的字段属性
+	PropertyCheckbox *CheckboxFieldProperty `json:"property_checkbox,omitempty"`
+	// PropertyDateTime 日期类型的字段属性
+	PropertyDateTime *DateTimeFieldProperty `json:"property_date_time,omitempty"`
+	// PropertyAttachment 文件类型的字段属性
+	PropertyAttachment *AttachmentFieldProperty `json:"property_attachment,omitempty"`
+	// PropertyUser 人员类型的字段属性
+	PropertyUser *UserFieldProperty `json:"property_user,omitempty"`
+	// PropertyURL 超链接类型的字段属性
+	PropertyURL *UrlFieldProperty `json:"property_url,omitempty"`
+	// PropertySelect 多选类型的字段属性
+	PropertySelect *SelectFieldProperty `json:"property_select,omitempty"`
+	// PropertyCreatedTime 创建时间类型的字段属性
+	PropertyCreatedTime *CreatedTimeFieldProperty `json:"property_created_time,omitempty"`
+	// PropertyModifiedTime 最后编辑时间类型的字段属性
+	PropertyModifiedTime *ModifiedTimeFieldProperty `json:"property_modified_time,omitempty"`
+	// PropertyProgress 进度类型的字段属性
+	PropertyProgress *ProgressFieldProperty `json:"property_progress,omitempty"`
+	// PropertySingleSelect 单选类型的字段属性
+	PropertySingleSelect *SingleSelectFieldProperty `json:"property_single_select,omitempty"`
+	// PropertyReference 引用类型的字段属性
+	PropertyReference *ReferenceFieldProperty `json:"property_reference,omitempty"`
+	// PropertyLocation 地理位置类型的字段属性
+	PropertyLocation *LocationFieldProperty `json:"property_location,omitempty"`
+	// PropertyAutoNumber 自动编号类型的字段属性
+	PropertyAutoNumber *AutoNumberFieldProperty `json:"property_auto_number,omitempty"`
+	// PropertyCurrency 货币类型的字段属性
+	PropertyCurrency *CurrencyFieldProperty `json:"property_currency,omitempty"`
+	// PropertyWwGroup 群类型的字段属性
+	PropertyWwGroup *WwGroupFieldProperty `json:"property_ww_group,omitempty"`
+	// PropertyPercentage 百分数类型的字段属性
+	PropertyPercentage *PercentageFieldProperty `json:"property_percentage,omitempty"`
+}
+
+// FieldType 字段类型
+type FieldType string
+
+const (
+	FieldTypeText         FieldType = "FIELD_TYPE_TEXT"          // 文本
+	FieldTypeNumber       FieldType = "FIELD_TYPE_NUMBER"        // 数字
+	FieldTypeCheckbox     FieldType = "FIELD_TYPE_CHECKBOX"      // 复选框
+	FieldTypeDateTime     FieldType = "FIELD_TYPE_DATE_TIME"     // 日期
+	FieldTypeImage        FieldType = "FIELD_TYPE_IMAGE"         // 图片
+	FieldTypeAttachment   FieldType = "FIELD_TYPE_ATTACHMENT"    // 文件
+	FieldTypeUser         FieldType = "FIELD_TYPE_USER"          // 成员
+	FieldTypeURL          FieldType = "FIELD_TYPE_URL"           // 超链接
+	FieldTypeSelect       FieldType = "FIELD_TYPE_SELECT"        // 多选
+	FieldTypeCreatedUser  FieldType = "FIELD_TYPE_CREATED_USER"  // 创建人
+	FieldTypeModifiedUser FieldType = "FIELD_TYPE_MODIFIED_USER" // 最后编辑人
+	FieldTypeCreatedTime  FieldType = "FIELD_TYPE_CREATED_TIME"  // 创建时间
+	FieldTypeModifiedTime FieldType = "FIELD_TYPE_MODIFIED_TIME" // 最后编辑时间
+	FieldTypeProgress     FieldType = "FIELD_TYPE_PROGRESS"      // 进度
+	FieldTypePhoneNumber  FieldType = "FIELD_TYPE_PHONE_NUMBER"  // 电话
+	FieldTypeEmail        FieldType = "FIELD_TYPE_EMAIL"         // 邮件
+	FieldTypeSingleSelect FieldType = "FIELD_TYPE_SINGLE_SELECT" // 单选
+	FieldTypeReference    FieldType = "FIELD_TYPE_REFERENCE"     // 关联
+	FieldTypeLocation     FieldType = "FIELD_TYPE_LOCATION"      // 地理位置
+	FieldTypeFormula      FieldType = "FIELD_TYPE_FORMULA"       // 公式
+	FieldTypeCurrency     FieldType = "FIELD_TYPE_CURRENCY"      // 货币
+	FieldTypeWwGroup      FieldType = "FIELD_TYPE_WWGROUP"       // 群
+	FieldTypeAutoNumber   FieldType = "FIELD_TYPE_AUTONUMBER"    // 自动编号
+	FieldTypePercentage   FieldType = "FIELD_TYPE_PERCENTAGE"    // 百分数
+)
+
+// NumberFieldProperty 数字类型字段属性
+type NumberFieldProperty struct {
+	// DecimalPlaces 表示小数点的位数，即数字精度
+	DecimalPlaces int `json:"decimal_places"`
+	// UseSeparate 是否使用千位符，设置此属性后数字字段将以英文逗号分隔千分位，如1,000
+	UseSeparate bool `json:"use_separate"`
+}
+
+// CheckboxFieldProperty 复选框类型字段属性
+type CheckboxFieldProperty struct {
+	// Checked 新增时是否默认勾选
+	Checked bool `json:"checked"`
+}
+
+// DateTimeFieldProperty 日期类型字段属性
+type DateTimeFieldProperty struct {
+	// Format 设置日期格式
+	Format string `json:"format"`
+	// AutoFill 新建记录时，是否自动填充时间
+	AutoFill bool `json:"auto_fill"`
+}
+
+// AttachmentFieldProperty 文件类型字段属性
+type AttachmentFieldProperty struct {
+	// DisplayMode 展示样式
+	DisplayMode string `json:"display_mode"`
+}
+
+// UserFieldProperty 成员类型字段属性
+type UserFieldProperty struct {
+	// IsMultiple 允许添加多个人员
+	IsMultiple bool `json:"is_multiple"`
+	// IsNotified 添加人员时通知用户，关闭后不通知
+	IsNotified bool `json:"is_notified"`
+}
+
+// UrlFieldProperty 超链接类型字段属性
+type UrlFieldProperty struct {
+	// Type 超链接展示样式
+	Type string `json:"type"`
+}
+
+// SelectFieldProperty 多选类型字段属性
+type SelectFieldProperty struct {
+	// IsQuickAdd 是否允许填写时新增选项
+	IsQuickAdd bool `json:"is_quick_add"`
+	// Options 多选选项的格式设置
+	Options []Option `json:"options"`
+}
+
+// CreatedTimeFieldProperty 创建时间类型字段属性
+type CreatedTimeFieldProperty struct {
+	// Format 设置日期格式
+	Format string `json:"format"`
+}
+
+// ModifiedTimeFieldProperty 最后编辑时间类型字段属性
+type ModifiedTimeFieldProperty struct {
+	// Format 设置日期格式
+	Format string `json:"format"`
+}
+
+// ProgressFieldProperty 进度类型字段属性
+type ProgressFieldProperty struct {
+	// DecimalPlaces 小数位数
+	DecimalPlaces int `json:"decimal_places"`
+}
+
+// SingleSelectFieldProperty 单选类型字段属性
+type SingleSelectFieldProperty struct {
+	// IsQuickAdd 是否允许填写时新增选项
+	IsQuickAdd bool `json:"is_quick_add"`
+	// Options 单选选项的格式设置
+	Options []Option `json:"options"`
+}
+
+// ReferenceFieldProperty 关联字段属性
+type ReferenceFieldProperty struct {
+	// SubID 关联的子表id，为空时，表示关联本子表
+	SubID string `json:"sub_id"`
+	// FiledID 关联的字段id
+	FiledID string `json:"filed_id"`
+	// IsMultiple 是否允许多选
+	IsMultiple bool `json:"is_multiple"`
+	// ViewID 视图id
+	ViewID string `json:"view_id"`
+}
+
+// LocationFieldProperty 地理位置字段属性
+type LocationFieldProperty struct {
+	// InputType 输入类型
+	InputType string `json:"input_type"`
+}
+
+// AutoNumberFieldProperty 自动编号字段属性
+type AutoNumberFieldProperty struct {
+	// Type 输入类型
+	Type string `json:"type"`
+	// Rules 自定义规则
+	Rules []NumberRule `json:"rules"`
+	// ReformatExistingRecord 是否应用于已有编号
+	ReformatExistingRecord bool `json:"reformat_existing_record"`
+}
+
+// CurrencyFieldProperty 货币类型字段属性
+type CurrencyFieldProperty struct {
+	// CurrencyType 输入类型
+	CurrencyType string `json:"currency_type"`
+	// DecimalPlaces 表示小数点的位数，即数字精度
+	DecimalPlaces int `json:"decimal_places"`
+	// UseSeparate 是否使用千位符
+	UseSeparate bool `json:"use_separate"`
+}
+
+// WwGroupFieldProperty 群类型的字段属性
+type WwGroupFieldProperty struct {
+	// AllowMultiple 是否允许多个群聊
+	AllowMultiple bool `json:"allow_multiple"`
+}
+
+// PercentageFieldProperty 百分数类型的字段属性
+type PercentageFieldProperty struct {
+	// DecimalPlaces 表示小数点的位数，即数字精度
+	DecimalPlaces int `json:"decimal_places"`
+	// UseSeparate 是否使用千位符
+	UseSeparate bool `json:"use_separate"`
+}
+
+// Option 选项参数
+type Option struct {
+	// ID 选项ID
+	ID string `json:"id"`
+	// Text 要填写的选项内容
+	Text string `json:"text"`
+	// Style 选项颜色
+	Style int `json:"style"`
+}
+
+// NumberRule 自动编号规则
+type NumberRule struct {
+	// Type 规则类型
+	Type string `json:"type"`
+	// Value 存放创建时间格式或固定字符，自增数字位数
+	Value string `json:"value"`
+}
+
 // execWedocCreatDoc 新建文档
 func (c *WorkwxApp) execWedocCreatDoc(req reqCreateDoc) (respCreateDoc, error) {
 	var resp respCreateDoc
@@ -356,6 +604,17 @@ func (c *WorkwxApp) execWedocSmartsheetGetViews(req reqListSmartsheetViews) (res
 	err := executeQyapiJSONPost(c, "/cgi-bin/wedoc/smartsheet/get_views", req, &resp, true)
 	if err != nil {
 		return respListSmartsheetViews{}, err
+	}
+
+	return resp, nil
+}
+
+// execWedocSmartsheetGetFields 查询字段
+func (c *WorkwxApp) execWedocSmartsheetGetFields(req reqListSmartsheetFields) (respListSmartsheetFields, error) {
+	var resp respListSmartsheetFields
+	err := executeQyapiJSONPost(c, "/cgi-bin/wedoc/smartsheet/get_fields", req, &resp, true)
+	if err != nil {
+		return respListSmartsheetFields{}, err
 	}
 
 	return resp, nil

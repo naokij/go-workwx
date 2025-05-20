@@ -357,7 +357,7 @@ type respDeptCreate struct {
 }
 
 // reqDeptList 获取部门列表
-// 从2022年8月15日10点开始，“企业管理后台 - 管理工具 - 通讯录同步”的新增IP将不能再调用此接口，企业可通过「获取部门ID列表」接口获取部门ID列表。查看调整详情。
+// 从2022年8月15日10点开始，"企业管理后台 - 管理工具 - 通讯录同步"的新增IP将不能再调用此接口，企业可通过「获取部门ID列表」接口获取部门ID列表。查看调整详情。
 // https://developer.work.weixin.qq.com/document/path/96079
 type reqDeptList struct {
 	HaveID bool
@@ -1067,13 +1067,13 @@ type respOAGetApprovalDetail struct {
 
 // TaskCardBtn 任务卡片消息按钮
 type TaskCardBtn struct {
-	// Key 按钮key值，用户点击后，会产生任务卡片回调事件，回调事件会带上该key值，只能由数字、字母和“_-@”组成，最长支持128字节
+	// Key 按钮key值，用户点击后，会产生任务卡片回调事件，回调事件会带上该key值，只能由数字、字母和"_-@"组成，最长支持128字节
 	Key string `json:"key"`
 	// Name 按钮名称
 	Name string `json:"name"`
-	// ReplaceName 点击按钮后显示的名称，默认为“已处理”
+	// ReplaceName 点击按钮后显示的名称，默认为"已处理"
 	ReplaceName string `json:"replace_name"`
-	// Color 按钮字体颜色，可选“red”或者“blue”,默认为“blue”
+	// Color 按钮字体颜色，可选"red"或者"blue",默认为"blue"
 	Color string `json:"color"`
 	// IsBold 按钮字体是否加粗，默认false
 	IsBold bool `json:"is_bold"`
@@ -1103,7 +1103,7 @@ type MPArticle struct {
 	ThumbMediaID string `json:"thumb_media_id"`
 	// 图文消息的作者，不超过64个字节
 	Author string `json:"author"`
-	// 图文消息点击“阅读原文”之后的页面链接
+	// 图文消息点击"阅读原文"之后的页面链接
 	ContentSourceURL string `json:"content_source_url"`
 	// 图文消息的内容，支持html标签，不超过666 K个字节（支持id转译）
 	Content string `json:"content"`
@@ -2019,5 +2019,12 @@ func (x reqGetSmartsheet) intoBody() ([]byte, error) {
 var _ bodyer = reqWedriveSpaceCreate{}
 
 func (x reqWedriveSpaceCreate) intoBody() ([]byte, error) {
+	return marshalIntoJSONBody(x)
+}
+
+// 为reqListSmartsheetFields结构体实现bodyer接口
+var _ bodyer = reqListSmartsheetFields{}
+
+func (x reqListSmartsheetFields) intoBody() ([]byte, error) {
 	return marshalIntoJSONBody(x)
 }

@@ -333,6 +333,43 @@ func InitApp() *cli.App {
 					},
 				},
 			},
+			{
+				Name:   "smartsheet-list-fields",
+				Usage:  "获取智能表格字段列表",
+				Action: cmdSmartsheetListFields,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  flagDocID,
+						Usage: "文档的docid",
+					},
+					&cli.StringFlag{
+						Name:  flagSheetID,
+						Usage: "表格ID",
+					},
+					&cli.StringFlag{
+						Name:  flagViewID,
+						Usage: "视图ID（可选）",
+					},
+					&cli.StringSliceFlag{
+						Name:  flagFieldIDs,
+						Usage: "由字段ID组成的数组（可选）",
+					},
+					&cli.StringSliceFlag{
+						Name:  flagFieldTitles,
+						Usage: "由字段标题组成的数组（可选）",
+					},
+					&cli.IntFlag{
+						Name:  flagOffset,
+						Usage: "偏移量，初始值为0",
+						Value: 0,
+					},
+					&cli.IntFlag{
+						Name:  flagLimit,
+						Usage: "分页大小，不填或0时，如果总数大于1000，一次性返回1000个字段，当总数小于1000时，返回全部字段；最大值为1000",
+						Value: 0,
+					},
+				},
+			},
 			// 企业微信微盘管理命令
 			{
 				Name:   "wedrive-create-space",

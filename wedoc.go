@@ -124,3 +124,30 @@ func (c *WorkwxApp) ListSmartsheetViews(docID, sheetID string, viewIDs []string,
 
 	return resp.Total, resp.HasMore, resp.Next, resp.Views, nil
 }
+
+// ListSmartsheetFields 获取智能表格字段列表
+// docID: 文档的docid
+// sheetID: 表格ID
+// viewID: 可选，视图ID
+// fieldIDs: 可选，由字段ID组成的数组
+// fieldTitles: 可选，由字段标题组成的数组
+// offset: 可选，偏移量，初始值为0
+// limit: 可选，分页大小，不填或0时，如果总数大于1000，一次性返回1000个字段，当总数小于1000时，返回全部字段；最大值为1000
+func (c *WorkwxApp) ListSmartsheetFields(docID, sheetID string, viewID string, fieldIDs, fieldTitles []string, offset, limit int) (total int, fields []Field, err error) {
+	req := reqListSmartsheetFields{
+		DocID:       docID,
+		SheetID:     sheetID,
+		ViewID:      viewID,
+		FieldIDs:    fieldIDs,
+		FieldTitles: fieldTitles,
+		Offset:      offset,
+		Limit:       limit,
+	}
+
+	resp, err := c.execWedocSmartsheetGetFields(req)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	return resp.Total, resp.Fields, nil
+}
