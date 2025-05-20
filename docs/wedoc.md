@@ -6,17 +6,22 @@
 
 Name|JSON|Type|Doc
 :---|:---|:---|:--
-`SpaceID`|`spaceid`|`string`|空间spaceid。若指定spaceid，则fatherid也要同时指定
+`SpaceID`|`spaceid,omitempty`|`string`|空间spaceid。若指定spaceid，则fatherid也要同时指定
 `FatherID`|`fatherid`|`string`|	父目录fileid, 在根目录时为空间spaceid
 `DocType`|`doc_type`|`DocType`|文档类型, 3:文档 4:表格 10:智能表格
 `DocName`|`doc_name`|`string`|文档名字（注意：文件名最多填255个字符, 超过255个字符会被截断）
 `AdminUsers`|`admin_users`|`[]string`|文档管理员userid
 
-### `DocType` 文档类型
-`DocType` 是无符号32位整数类型 (`uint32`)，可能的值包括：
-- `3` - 文档
-- `4` - 表格
-- `10` - 智能表格
+```go
+// DocType 文档类型
+type DocType uint32
+
+const (
+	DocTypeDoc        DocType = 3  // 文档
+	DocTypeSheet      DocType = 4  // 表格
+	DocTypeSmartSheet DocType = 10 // 智能表格
+)
+```
 
 ### `respCreateDoc` 新建文档返回
 
@@ -38,8 +43,8 @@ Name|JSON|Type|Doc
 
 Name|JSON|Type|Doc
 :---|:---|:---|:--
-`DocID`|`docid`|`string`|文档docid（docid、formid只能填其中一个），仅可删除应用自己创建的文档
-`FormID`|`formid`|`string`|收集表id（docid、formid只能填其中一个），仅可删除应用自己创建的收集表
+`DocID`|`docid,omitempty`|`string`|文档docid（docid、formid只能填其中一个），仅可删除应用自己创建的文档
+`FormID`|`formid,omitempty`|`string`|收集表id（docid、formid只能填其中一个），仅可删除应用自己创建的收集表
 
 ### `reqGetDocBaseInfo` 获取文档基础信息请求
 
@@ -69,8 +74,8 @@ Name|JSON|Type|Doc
 
 Name|JSON|Type|Doc
 :---|:---|:---|:--
-`DocID`|`docid`|`string`|文档id（docid、formid只能填其中一个）
-`FormID`|`formid`|`string`|收集表id（docid、formid只能填其中一个）
+`DocID`|`docid,omitempty`|`string`|文档id（docid、formid只能填其中一个）
+`FormID`|`formid,omitempty`|`string`|收集表id（docid、formid只能填其中一个）
 
 ### `respDocShare` 分享文档返回
 

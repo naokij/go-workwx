@@ -5,7 +5,7 @@ package workwx
 // reqCreateDoc 新建文档请求
 type reqCreateDoc struct {
 	// SpaceID 空间spaceid。若指定spaceid，则fatherid也要同时指定
-	SpaceID string `json:"spaceid"`
+	SpaceID string `json:"spaceid,omitempty"`
 	// FatherID 	父目录fileid, 在根目录时为空间spaceid
 	FatherID string `json:"fatherid"`
 	// DocType 文档类型, 3:文档 4:表格 10:智能表格
@@ -17,8 +17,13 @@ type reqCreateDoc struct {
 }
 
 // DocType 文档类型
-type DocType struct {
-}
+type DocType uint32
+
+const (
+	DocTypeDoc        DocType = 3  // 文档
+	DocTypeSheet      DocType = 4  // 表格
+	DocTypeSmartSheet DocType = 10 // 智能表格
+)
 
 // respCreateDoc 新建文档返回
 type respCreateDoc struct {
@@ -43,9 +48,9 @@ type reqRenameDoc struct {
 // reqDelDoc 删除文档请求
 type reqDelDoc struct {
 	// DocID 文档docid（docid、formid只能填其中一个），仅可删除应用自己创建的文档
-	DocID string `json:"docid"`
+	DocID string `json:"docid,omitempty"`
 	// FormID 收集表id（docid、formid只能填其中一个），仅可删除应用自己创建的收集表
-	FormID string `json:"formid"`
+	FormID string `json:"formid,omitempty"`
 }
 
 // reqGetDocBaseInfo 获取文档基础信息请求
@@ -79,9 +84,9 @@ type DocBaseInfo struct {
 // reqDocShare 分享文档请求
 type reqDocShare struct {
 	// DocID 文档id（docid、formid只能填其中一个）
-	DocID string `json:"docid"`
+	DocID string `json:"docid,omitempty"`
 	// FormID 收集表id（docid、formid只能填其中一个）
-	FormID string `json:"formid"`
+	FormID string `json:"formid,omitempty"`
 }
 
 // respDocShare 分享文档返回

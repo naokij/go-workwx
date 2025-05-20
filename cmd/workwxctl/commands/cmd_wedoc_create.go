@@ -38,12 +38,9 @@ func cmdWedocCreate(c *cli.Context) error {
 
 	app := cfg.MakeWorkwxApp()
 
-	// DocType在go-workwx库中是一个struct类型
-	// 正常情况下我们需要设置docType的值
-	// 但当前SDK的设计不够清晰，这里使用空结构体让SDK内部处理
-	// docTypeInt变量仅用于记录类型，实际传递时不使用
 	_ = docTypeInt
 	var docType workwx.DocType
+	docType = workwx.DocType(docTypeInt)
 
 	url, docID, err := app.CreateWedoc(spaceID, fatherID, docType, docName, adminUsers)
 	if err != nil {

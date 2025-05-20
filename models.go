@@ -2015,3 +2015,9 @@ var _ bodyer = reqGetSmartsheet{}
 func (x reqGetSmartsheet) intoBody() ([]byte, error) {
 	return marshalIntoJSONBody(x)
 }
+
+var _ bodyer = reqWedriveSpaceCreate{}
+
+func (x reqWedriveSpaceCreate) intoBody() ([]byte, error) {
+	return marshalIntoJSONBody(x)
+}

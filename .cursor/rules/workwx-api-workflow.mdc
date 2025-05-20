@@ -7,27 +7,44 @@ alwaysApply: false
 
 此指南帮助开发者在添加或更新企业微信API时遵循标准流程。
 
+## 准备资料
+
+- 企业微信API文档网页 例如 https://developer.work.weixin.qq.com/document/path/97460
+- 确定对应的API文档文件：项目中的`docs/*.md`文件，根据更新的功能模块选择相应文档：
+  - 微盘功能：[docs/wedrive.md](mdc:docs/wedrive.md)
+  - 文档功能：[docs/wedoc.md](mdc:docs/wedoc.md)
+  - 客服功能：[docs/kf.md](mdc:docs/kf.md)
+  - OA功能：[docs/oa.md](mdc:docs/oa.md)
+  - 用户信息：[docs/user_info.md](mdc:docs/user_info.md)
+  - 部门信息：[docs/dept_info.md](mdc:docs/dept_info.md)
+  - 其他功能查看`docs/`目录下对应的文档
+
 ## 更新流程
 
 更新企业微信API功能的标准流程如下：
 
-1. 根据企业微信的API文档更新 ](mdc:docs/wedoc.md) 或其他相关文档文件
-   - 用fetch mcp去读企业微信API文档，不要用搜索的方式去获取企业微信API文档内容
-   - 参考示例：https://developer.work.weixin.qq.com/document/path/97460
-   - 确保按照既有格式添加Models和API calls部分
-    - 请求包体 -> Models 里面的请求类型
-    - 返回示例 -> Models 里面的返回类型
-    - 模型类型能用表格表示的都用表格表示，枚举类型用go代码表示
-    - 根据 "请求地址" 生成api call名字 例如 "https://qyapi.weixin.qq.com/cgi-bin/wedoc/get_doc_base_info?access_token=ACCESS_TOKEN" -> api call name: execWedocGetDocBaseInfo
+1. 根据企业微信的API文档更新相应的`.md`文档文件
+   - 使用fetch工具获取企业微信API文档内容，不要用搜索方式获取API文档
+   - 参考官方API文档(例如 https://developer.work.weixin.qq.com/document/path/97460)
+   - 按照既有格式添加Models和API calls部分：
+     - 请求参数 -> 添加到Models中的请求类型
+     - 返回示例 -> 添加到Models中的返回类型
+     - 数据模型尽量用表格表示，枚举类型用Go代码表示
+     - 根据"请求地址"生成api call名称，例如：
+       - 文档："https://qyapi.weixin.qq.com/cgi-bin/wedoc/get_doc_base_info?access_token=ACCESS_TOKEN" -> API名称: `execWedocGetDocBaseInfo`
+       - 微盘："https://qyapi.weixin.qq.com/cgi-bin/wedrive/space_create?access_token=ACCESS_TOKEN" -> API名称: `wedriveCreateSpace`
 
-2. 在项目根目录执行代码生成命令 `go generate ./...`
-   - 这将从markdown文档生成相应的Go代码文件(*.mdummy_fo.go](mdc:dummy_for_generate.go)
-   - 也可以单独为某个文件生成代码，例如 `go run --tags sdkcodegen ./internal/sdkcodegen doc.md ./wedoc.md.go`
+2. 生成Go代码
+   - 在项目根目录执行代码生成命令 `go generate ./...`
+     - 这将根据[dummy_for_generate.go](mdc:dummy_for_generate.go)中定义的指令从markdown文档生成相应的Go代码文件
+   - 也可以单独为某个文件生成代码：
+     - 文档功能：`go run --tags sdkcodegen ./internal/sdkcodegen ./docs/wedoc.md ./wedoc.md.go`
+     - 微盘功能：`go run --tags sdkcodegen ./internal/sdkcodegen ./docs/wedrive.md ./wedrive.md.go`
 
-3. 在 [models.go](mdc:models.go) 中实现API调用的请求参数类型的bodyer接口
-   - 不用动models.go里面其他的部分的代码和注释
+3. 在[models.go](mdc:models.go)中实现请求参数类型的bodyer接口
+   - 不要修改models.go中其他代码和注释
    - **重要**：不要在models.go中手动添加结构体定义，这些应该由代码生成工具从markdown文档中生成
-   - 只需实现请求结构体的bodyer接口和intoBody()方法即可
+   - 为请求结构体实现bodyer接口和intoBody()方法：
    ```go
    var _ bodyer = reqXXX{}
    
@@ -36,25 +53,43 @@ alwaysApply: false
    }
    ```
 
-4. 在 [wedoc.go](mdc:wedoc.go) (或相关功能文件) 中封装生成的API调用
-   - 创建用户友好的公开方法
-   - 封装底层execXxx方法
-   - 提供清晰的参数文档和返回值说明
+4. 在功能对应的Go文件中封装API调用
+   - 文档功能：在[wedoc.go](mdc:wedoc.go)中实现
+   - 微盘功能：在[wedrive.go](mdc:wedrive.go)中实现
+   - OA功能：在[oa.go](mdc:oa.go)中实现
+   - 其他功能对应各自的Go文件
+   - 创建用户友好的公开方法，封装底层API调用：
+     - 提供清晰的函数签名和参数
+     - 添加适当的文档注释，包括官方API链接
+     - 处理错误和类型转换
 
 ## 文件结构
 
 - `docs/*.md`: API定义文档（按功能分类）
+  - `docs/wedoc.md`: 文档功能API定义
+  - `docs/wedrive.md`: 微盘功能API定义
+  - `docs/kf.md`: 客服功能API定义
+  - `docs/oa.md`: OA功能API定义
 - `*.md.go`: 从markdown自动生成的Go代码
+  - `wedoc.md.go`: 文档功能生成的代码
+  - `wedrive.md.go`: 微盘功能生成的代码
 - `*.go`: 手动实现的API封装和扩展功能
+  - `wedoc.go`: 文档功能的封装实现
+  - `wedrive.go`: 微盘功能的封装实现
 
 ## 命名规范
 
-- API定义文档中的execXxx方法遵循统一命名模式
-- Go封装方法使用清晰的领域术语，如CreateWedoc、RenameWedoc等
+- 生成的底层API方法遵循统一命名模式，例如：
+  - 文档相关：`execWedocXxx`
+  - 微盘相关：`wedriveXxx`
+- 封装的公开方法使用清晰的领域术语，如：
+  - 文档：`CreateDoc`、`RenameDoc`
+  - 微盘：`CreateSpace`、`ListFiles`
 
 ## 常见问题
 
-- 如果生成代码与现有实现不兼容，检查markdown文档格式是否正确
+- 生成代码与现有实现不兼容时，检查markdown文档格式是否正确
 - 确保所有请求类型都正确实现了bodyer接口
-- 如果出现结构体重复定义错误，确保没有在models.go中手动添加已由生成代码提供的结构体
-- 所有的数据模型应该在markdown文档中定义，然后由代码生成工具生成
+- 结构体重复定义错误表示有手动添加了应由生成代码提供的结构体
+- 所有数据模型应在markdown文档中定义，然后由代码生成工具生成
+- 如果需要添加新的文档文件，确保在[dummy_for_generate.go](mdc:dummy_for_generate.go)中添加对应的生成指令

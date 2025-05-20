@@ -64,6 +64,12 @@ const (
 	flagViewIDs    = "view-ids"
 	flagOffset     = "offset"
 	flagLimit      = "limit"
+
+	// 企业微信微盘相关标志
+	flagSpaceName   = "space-name"
+	flagAuthUserids = "auth-userids"
+	flagAuthDeptids = "auth-deptids"
+	flagAuthType    = "auth-type"
 )
 
 type cliOptions struct {

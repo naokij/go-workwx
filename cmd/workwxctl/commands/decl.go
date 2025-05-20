@@ -333,6 +333,31 @@ func InitApp() *cli.App {
 					},
 				},
 			},
+			// 企业微信微盘管理命令
+			{
+				Name:   "wedrive-create-space",
+				Usage:  "创建企业微信微盘空间",
+				Action: cmdWedriveCreateSpace,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  flagSpaceName,
+						Usage: "空间名称（必填）",
+					},
+					&cli.StringSliceFlag{
+						Name:  flagAuthUserids,
+						Usage: "授权用户ID列表，可重复指定",
+					},
+					&cli.UintSliceFlag{
+						Name:  flagAuthDeptids,
+						Usage: "授权部门ID列表，可重复指定",
+					},
+					&cli.UintFlag{
+						Name:  flagAuthType,
+						Usage: "授权类型: 1(仅下载), 4(可预览), 7(应用空间管理员)",
+						Value: 4, // 默认可预览
+					},
+				},
+			},
 		},
 	}
 }
