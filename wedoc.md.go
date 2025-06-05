@@ -602,6 +602,138 @@ type Record struct {
 	UpdaterName string `json:"updater_name"`
 }
 
+// reqSmartsheetAddRecords 添加记录请求
+type reqSmartsheetAddRecords struct {
+	// DocID 文档的docid
+	DocID string `json:"docid"`
+	// SheetID Smartsheet 子表ID
+	SheetID string `json:"sheet_id"`
+	// KeyType 返回记录中单元格的key类型，默认用标题
+	KeyType CellValueKeyType `json:"key_type,omitempty"`
+	// Records 需要添加的记录的具体内容组成的 JSON 数组
+	Records []AddRecord `json:"records"`
+}
+
+// AddRecord 添加记录
+type AddRecord struct {
+	// Values 记录的具体内容，key 为字段标题或字段 ID，value 类型根据字段类型不同而异
+	Values map[string]interface{} `json:"values"`
+}
+
+// respSmartsheetAddRecords 添加记录响应
+type respSmartsheetAddRecords struct {
+	// respCommon 通用响应
+	respCommon
+	// Records 由添加成功的记录的具体内容组成的 JSON 数组
+	Records []Record `json:"records"`
+}
+
+// CellTextValue 文本类型字段值
+type CellTextValue struct {
+	// Value 文本内容
+	Value string `json:"-"`
+}
+
+// CellNumberValue 数字类型字段值
+type CellNumberValue struct {
+	// Value 数字值
+	Value float64 `json:"-"`
+}
+
+// CellCheckboxValue 复选框类型字段值
+type CellCheckboxValue struct {
+	// Value 复选框状态，true表示勾选，false表示未勾选
+	Value bool `json:"-"`
+}
+
+// CellDateValue 日期类型字段值
+type CellDateValue struct {
+	// Type 日期类型：DATE-日期；DATETIME-日期+时间；DATE_RANGE-日期范围
+	Type string `json:"type"`
+	// Value 日期值，当Type为DATE或DATETIME时为字符串，当Type为DATE_RANGE时为字符串数组
+	Value interface{} `json:"value"`
+}
+
+// CellImageValue 图片类型字段值
+type CellImageValue struct {
+	// Values 图片ID数组
+	Values []string `json:"-"`
+}
+
+// CellAttachmentFile 文件信息
+type CellAttachmentFile struct {
+	// FileID 文件ID
+	FileID string `json:"file_id"`
+	// FileName 文件名称
+	FileName string `json:"file_name"`
+}
+
+// CellAttachmentValue 文件类型字段值
+type CellAttachmentValue struct {
+	// Values 文件信息数组
+	Values []CellAttachmentFile `json:"-"`
+}
+
+// CellUserValue 成员类型字段值
+type CellUserValue struct {
+	// Values 成员ID数组
+	Values []string `json:"-"`
+}
+
+// CellURLValue 超链接类型字段值
+type CellURLValue struct {
+	// URL 链接地址
+	URL string `json:"url"`
+	// Text 链接文本说明
+	Text string `json:"text"`
+}
+
+// CellSingleSelectValue 单选类型字段值
+type CellSingleSelectValue struct {
+	// Value 选项ID
+	Value string `json:"-"`
+}
+
+// CellSelectValue 多选类型字段值
+type CellSelectValue struct {
+	// Values 选项ID数组
+	Values []string `json:"-"`
+}
+
+// CellReferenceValue 关联类型字段值
+type CellReferenceValue struct {
+	// Values 关联的记录ID数组
+	Values []string `json:"-"`
+}
+
+// CellLocationValue 地理位置类型字段值
+type CellLocationValue struct {
+	// Address 地址
+	Address string `json:"address"`
+	// Latitude 纬度
+	Latitude float64 `json:"latitude"`
+	// Longitude 经度
+	Longitude float64 `json:"longitude"`
+}
+
+// CellCurrencyValue 货币类型字段值
+type CellCurrencyValue struct {
+	// Value 货币数值
+	Value float64 `json:"-"`
+}
+
+// CellWwGroupValue 群类型字段值
+type CellWwGroupValue struct {
+	// Values 群聊ID数组
+	Values []string `json:"-"`
+}
+
+// CellPercentageValue 百分数类型字段值
+type CellPercentageValue struct {
+	// Value 百分比值，实际数值（0.75表示75%）
+	Value float64 `json:"-"`
+}
+
 // execWedocCreatDoc 新建文档
 func (c *WorkwxApp) execWedocCreatDoc(req reqCreateDoc) (respCreateDoc, error) {
 	var resp respCreateDoc
@@ -696,6 +828,17 @@ func (c *WorkwxApp) execWedocSmartsheetGetRecords(req reqSmartsheetGetRecords) (
 	err := executeQyapiJSONPost(c, "/cgi-bin/wedoc/smartsheet/get_records", req, &resp, true)
 	if err != nil {
 		return respSmartsheetGetRecords{}, err
+	}
+
+	return resp, nil
+}
+
+// execWedocSmartsheetAddRecords 添加记录
+func (c *WorkwxApp) execWedocSmartsheetAddRecords(req reqSmartsheetAddRecords) (respSmartsheetAddRecords, error) {
+	var resp respSmartsheetAddRecords
+	err := executeQyapiJSONPost(c, "/cgi-bin/wedoc/smartsheet/add_records", req, &resp, true)
+	if err != nil {
+		return respSmartsheetAddRecords{}, err
 	}
 
 	return resp, nil

@@ -424,6 +424,30 @@ func InitApp() *cli.App {
 					},
 				},
 			},
+			{
+				Name:   "smartsheet-add-records",
+				Usage:  "添加智能表格记录",
+				Action: cmdSmartsheetAddRecords,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  flagDocID,
+						Usage: "文档的docid",
+					},
+					&cli.StringFlag{
+						Name:  flagSheetID,
+						Usage: "Smartsheet子表ID",
+					},
+					&cli.StringFlag{
+						Name:  flagKeyType,
+						Usage: "记录中单元格的key类型: CELL_VALUE_KEY_TYPE_FIELD_TITLE(字段标题), CELL_VALUE_KEY_TYPE_FIELD_ID(字段ID)，默认使用字段标题",
+						Value: string(workwx.CellValueKeyTypeFieldTitle),
+					},
+					&cli.StringFlag{
+						Name:  "records-file",
+						Usage: "包含记录数据的JSON文件路径，格式为数组，每个元素是一个记录对象，键为字段名或ID（取决于key_type）",
+					},
+				},
+			},
 			// 企业微信微盘管理命令
 			{
 				Name:   "wedrive-create-space",

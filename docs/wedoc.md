@@ -501,6 +501,128 @@ Name|JSON|Type|Doc
 `CreatorName`|`creator_name`|`string`|创建者名字
 `UpdaterName`|`updater_name`|`string`|最后编辑者名字
 
+### `reqSmartsheetAddRecords` 添加记录请求
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`DocID`|`docid`|`string`|文档的docid
+`SheetID`|`sheet_id`|`string`|Smartsheet 子表ID
+`KeyType`|`key_type,omitempty`|`CellValueKeyType`|返回记录中单元格的key类型，默认用标题
+`Records`|`records`|`[]AddRecord`|需要添加的记录的具体内容组成的 JSON 数组
+
+### `AddRecord` 添加记录
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Values`|`values`|`map[string]interface{}`|记录的具体内容，key 为字段标题或字段 ID，value 类型根据字段类型不同而异
+
+### `respSmartsheetAddRecords` 添加记录响应
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`respCommon`||-|通用响应
+`Records`|`records`|`[]Record`|由添加成功的记录的具体内容组成的 JSON 数组
+
+### `CellTextValue` 文本类型字段值
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Value`|`-`|`string`|文本内容
+
+### `CellNumberValue` 数字类型字段值
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Value`|`-`|`float64`|数字值
+
+### `CellCheckboxValue` 复选框类型字段值
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Value`|`-`|`bool`|复选框状态，true表示勾选，false表示未勾选
+
+### `CellDateValue` 日期类型字段值
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Type`|`type`|`string`|日期类型：DATE-日期；DATETIME-日期+时间；DATE_RANGE-日期范围
+`Value`|`value`|`interface{}`|日期值，当Type为DATE或DATETIME时为字符串，当Type为DATE_RANGE时为字符串数组
+
+### `CellImageValue` 图片类型字段值
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Values`|`-`|`[]string`|图片ID数组
+
+### `CellAttachmentFile` 文件信息
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`FileID`|`file_id`|`string`|文件ID
+`FileName`|`file_name`|`string`|文件名称
+
+### `CellAttachmentValue` 文件类型字段值
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Values`|`-`|`[]CellAttachmentFile`|文件信息数组
+
+### `CellUserValue` 成员类型字段值
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Values`|`-`|`[]string`|成员ID数组
+
+### `CellURLValue` 超链接类型字段值
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`URL`|`url`|`string`|链接地址
+`Text`|`text`|`string`|链接文本说明
+
+### `CellSingleSelectValue` 单选类型字段值
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Value`|`-`|`string`|选项ID
+
+### `CellSelectValue` 多选类型字段值
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Values`|`-`|`[]string`|选项ID数组
+
+### `CellReferenceValue` 关联类型字段值
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Values`|`-`|`[]string`|关联的记录ID数组
+
+### `CellLocationValue` 地理位置类型字段值
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Address`|`address`|`string`|地址
+`Latitude`|`latitude`|`float64`|纬度
+`Longitude`|`longitude`|`float64`|经度
+
+### `CellCurrencyValue` 货币类型字段值
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Value`|`-`|`float64`|货币数值
+
+### `CellWwGroupValue` 群类型字段值
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Values`|`-`|`[]string`|群聊ID数组
+
+### `CellPercentageValue` 百分数类型字段值
+
+Name|JSON|Type|Doc
+:---|:---|:---|:--
+`Value`|`-`|`float64`|百分比值，实际数值（0.75表示75%）
 
 ## API calls
 
@@ -515,5 +637,6 @@ Name|Request Type|Response Type|Access Token|URL|Doc
 `execWedocSmartsheetGetViews`|`reqListSmartsheetViews`|`respListSmartsheetViews`|Y|`POST /cgi-bin/wedoc/smartsheet/get_views`|[查询视图](https://developer.work.weixin.qq.com/document/path/99913)
 `execWedocSmartsheetGetFields`|`reqListSmartsheetFields`|`respListSmartsheetFields`|Y|`POST /cgi-bin/wedoc/smartsheet/get_fields`|[查询字段](https://developer.work.weixin.qq.com/document/path/100229)
 `execWedocSmartsheetGetRecords`|`reqSmartsheetGetRecords`|`respSmartsheetGetRecords`|Y|`POST /cgi-bin/wedoc/smartsheet/get_records`|[查询记录](https://developer.work.weixin.qq.com/document/path/100230)
+`execWedocSmartsheetAddRecords`|`reqSmartsheetAddRecords`|`respSmartsheetAddRecords`|Y|`POST /cgi-bin/wedoc/smartsheet/add_records`|[添加记录](https://developer.work.weixin.qq.com/document/path/100224)
 
 

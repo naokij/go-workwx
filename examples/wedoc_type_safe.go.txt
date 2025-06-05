@@ -1,0 +1,132 @@
+package main
+
+import (
+	"fmt"
+	"os"
+	"strconv"
+
+	// 注意: 请根据您的实际项目结构修改以下导入路径
+	// 如果是在本地开发，可以使用相对路径
+	// 例如: workwx ".."
+	// 如果是作为依赖引入，请使用完整的包路径
+	// 例如: workwx "github.com/xen0n/go-workwx"
+	workwx "github.com/xen0n/go-workwx"
+)
+
+// 这个示例展示了如何使用类型安全的方法访问智能表格记录中的字段值
+// 注意：这只是一个示例，实际使用时可能需要调整导入路径
+
+func main() {
+	// 正确初始化企业微信客户端和应用
+	cropID := os.Getenv("CROPID")
+	agentID, _ := strconv.ParseInt(os.Getenv("AGENTID"), 10, 64)
+	secret := os.Getenv("SECRET")
+
+	// 创建客户端与应用
+	client := workwx.New(cropID)
+	app := client.WithApp(secret, agentID)
+
+	// 示例文档和子表ID
+	docID := "YOUR_DOC_ID"     // 替换为实际文档ID
+	sheetID := "YOUR_SHEET_ID" // 替换为实际子表ID
+
+	// 获取记录列表
+	total, hasMore, next, records, err := app.ListSmartsheetRecords(
+		docID,
+		sheetID,
+		"",                                // 视图ID，可选
+		nil,                               // 记录ID列表，可选
+		workwx.CellValueKeyTypeFieldTitle, // 使用字段标题作为key
+		nil,                               // 字段标题列表，可选
+		nil,                               // 字段ID列表，可选
+		nil,                               // 排序，可选
+		0,                                 // 偏移量
+		10,                                // 每页记录数
+	)
+
+	if err != nil {
+		fmt.Printf("获取记录失败: %v\n", err)
+		return
+	}
+
+	fmt.Printf("共找到 %d 条记录，是否有更多: %v, 下一页偏移: %d\n", total, hasMore, next)
+
+	// 使用类型安全的方法处理记录
+	for i, record := range records {
+		fmt.Printf("记录 #%d (ID: %s):\n", i+1, record.RecordID)
+		fmt.Printf("  创建时间: %s\n", record.CreateTime)
+		fmt.Printf("  创建者: %s\n", record.CreatorName)
+
+		// 安全获取各种类型的字段值
+		if textValue, err := record.GetTextValue("标题"); err == nil {
+			fmt.Printf("  标题: %s\n", textValue)
+		}
+
+		if numberValue, err := record.GetNumberValue("金额"); err == nil {
+			fmt.Printf("  金额: %.2f\n", numberValue)
+		}
+
+		if isCompleted, err := record.GetCheckboxValue("是否完成"); err == nil {
+			fmt.Printf("  是否完成: %v\n", isCompleted)
+		}
+
+		if dateStr, err := record.GetDateString("截止日期"); err == nil {
+			fmt.Printf("  截止日期: %s\n", dateStr)
+		}
+
+		if url, text, err := record.GetURLValue("相关链接"); err == nil {
+			fmt.Printf("  相关链接: %s (%s)\n", text, url)
+		}
+
+		if userIDs, err := record.GetUserIDs("负责人"); err == nil {
+			fmt.Printf("  负责人: %v\n", userIDs)
+		}
+
+		if files, err := record.GetAttachmentFiles("附件"); err == nil {
+			fmt.Printf("  附件数量: %d\n", len(files))
+			for _, file := range files {
+				fmt.Printf("    - %s (ID: %s)\n", file.FileName, file.FileID)
+			}
+		}
+
+		if address, lat, lng, err := record.GetLocationValue("地点"); err == nil {
+			fmt.Printf("  地点: %s (%.6f, %.6f)\n", address, lat, lng)
+		}
+
+		// 安全处理日期范围字段
+		if start, end, err := record.GetDateRangeStrings("日期范围"); err == nil {
+			fmt.Printf("  日期范围: %s 至 %s\n", start, end)
+		}
+
+		fmt.Println()
+	}
+
+	// 添加记录示例
+	newRecords, err := app.AddSmartsheetRecords(
+		docID,
+		sheetID,
+		workwx.CellValueKeyTypeFieldTitle,
+		[]map[string]interface{}{
+			{
+				"标题":   workwx.NewTextCellValue("新任务"),
+				"金额":   workwx.NewNumberCellValue(1000.50),
+				"是否完成": workwx.NewCheckboxCellValue(false),
+				"截止日期": workwx.NewDateCellValue("2023-06-30"),
+				"时间范围": workwx.NewDateRangeCellValue("2023-06-01", "2023-06-30"),
+				"相关链接": workwx.NewURLCellValue("https://example.com", "参考文档"),
+				"负责人":  workwx.NewUserCellValue("zhangsan", "lisi"),
+				"地点":   workwx.NewLocationCellValue("北京市海淀区", 39.9, 116.3),
+				"进度":   workwx.NewPercentageCellValue(0.35), // 35%
+				"状态":   workwx.NewSingleSelectCellValue("option1"),
+				"标签":   workwx.NewSelectCellValue("tag1", "tag2"),
+			},
+		},
+	)
+
+	if err != nil {
+		fmt.Printf("添加记录失败: %v\n", err)
+		return
+	}
+
+	fmt.Printf("成功添加 %d 条记录\n", len(newRecords))
+}
